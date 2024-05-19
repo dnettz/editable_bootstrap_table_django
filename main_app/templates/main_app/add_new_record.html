@@ -1,0 +1,60 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block body %}
+<main>
+    <div class="container mt-5">
+        <div class="row row-cols-2 row-cols-lg-2">
+            <div class="col">
+                <h5 class="text-muted">{{data.full_name}} | New Purchase Records</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="excel-form"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary rounded-0" id="save-btn">Save purchase</button>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{% static 'main_app/js/excel-form.js' %}"></script>
+<script src="{% static 'main_app/js/axios.min.js' %}"></script>
+
+<script>
+    function saveData(){
+        const table = document.getElementById('excel-table');
+        const rows = table.getElementsByTagName('tr');
+        const tableData = [];
+        for (const row of rows){
+            const cells = row.getElementsByTagName('td');
+            const rowData = {};
+            for (const cell of cells){
+                const fieldName = cell.getAttribute('data-field');
+                const value = cell.textContent.trim();
+                if (value !== ''){
+                    rowData[fieldName] = value;
+                }
+            }
+            if (Object.keys(rowData).length > 0){
+                tableData.push(rowData);
+            }
+        };
+        axios.post("{% url 'main_app:add_record' data.uid %}", {
+            table_data: tableData,
+
+        }).then(
+            response => {
+                window.location.href = '{% url "main_app:open_customer" data.uid %}';
+            }
+        ).catch(error => {
+            console.log('Error', error);
+        });
+    };
+    const saveBTN = document.getElementById('save-btn');
+    saveBTN.addEventListener('click', saveData);
+</script>
+{% endblock body %}

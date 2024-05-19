@@ -1,0 +1,41 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block body %}
+<main>
+    <div class="container mt-5">
+        <div class="row row-cols-2 row-cols-lg-2">
+            <div class="col">
+                <h5 class="text-muted">{{data.full_name}} | Purchase List</h5>
+            </div>
+            <div class="col d-flex align-items-center justify-content-end">
+                <a href="{% url 'main_app:add_record' data.uid %}" class="btn btn-primary rounded-0">Add New Record</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Item Name</th>
+                            <th>Items Qnt</th>
+                            <th>Item Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dat in data.purchase_set.all %}
+                        <tr>
+                            <td>#{{dat.id}}</td>
+                            <td>{{dat.item_name}}</td>
+                            <td>{{dat.item_qnty}}</td>
+                            <td>{{dat.item_price}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock body %}
